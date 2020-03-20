@@ -1,13 +1,16 @@
 package a1824jj.jp.ac.aiit.studentregister;
 
+import a1824jj.jp.ac.aiit.studentregister.databinding.ActivityMainBinding;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,10 +31,18 @@ public class MainActivity extends AppCompatActivity {
     private StudentDataAdapter studentDataAdapter;
     public static final  int NEW_STUDENT_ACTIVITY_REQUEST_CODE = 1;
 
+    private ActivityMainBinding activityMainBinding;
+    private MainActivityClickHandlers handlers;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        handlers = new MainActivityClickHandlers(this);
+        activityMainBinding.setClickHandler(handlers);
 
         RecyclerView recyclerView = findViewById(R.id.rvStudents);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -57,15 +68,28 @@ public class MainActivity extends AppCompatActivity {
         }).attachToRecyclerView(recyclerView);
 
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddNewStudent.class);
-                startActivityForResult(intent, NEW_STUDENT_ACTIVITY_REQUEST_CODE);
-            }
-        });
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, AddNewStudent.class);
+//                startActivityForResult(intent, NEW_STUDENT_ACTIVITY_REQUEST_CODE);
+//            }
+//        });
 
+    }
+
+    public class MainActivityClickHandlers{
+        Context content;
+
+        public MainActivityClickHandlers(Context content) {
+            this.content = content;
+        }
+
+        public void onFABClicked(View view){
+            Intent intent = new Intent(MainActivity.this, AddNewStudent.class);
+            startActivityForResult(intent, NEW_STUDENT_ACTIVITY_REQUEST_CODE);
+        }
     }
 
     private void loadData() {
